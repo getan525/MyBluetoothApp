@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyBluetoothApp</string>
+    <string name="btn_btnList">蓝牙列表</string>
+    <string name="Bluetooth_untapped">蓝牙未开启</string>
+    <string name="Bluetooth_opened">蓝牙开启</string>
+    <string name="device_paired">已配对的设备</string>
+    <string name="device_new">可用的设备</string>
+</resources>
