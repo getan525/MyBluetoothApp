@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyBluetoothApp</string>
+    <string name="app_name">蓝牙小车APP</string>
     <string name="btn_btnList">蓝牙列表</string>
     <string name="Bluetooth_untapped">蓝牙未开启</string>
     <string name="Bluetooth_opened">蓝牙开启</string>
