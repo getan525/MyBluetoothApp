@@ -56,10 +56,9 @@ public class DeviceListActivity extends Activity implements AdapterView.OnItemCl
         //MyAdapter adapter = new ArrayAdapter<String>(R.layout.support_simple_spinner_dropdown_item);
         mArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         mBthListPaired.setAdapter(mArrayAdapter);
-        mBthListPaired.setOnItemClickListener(this);
+
         mArrayAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         mBthListNew.setAdapter(mArrayAdapter1);
-        mBthListNew.setOnItemClickListener(this);
 
         //初始化已绑定设备列表
         initBondedDevicesView();
@@ -88,12 +87,15 @@ public class DeviceListActivity extends Activity implements AdapterView.OnItemCl
 
 
     private void initItemClick() {
-        mBthListPaired.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mBthListPaired.setOnItemClickListener(this);
+        mBthListNew.setOnItemClickListener(this);
+
+       /* mBthListPaired.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             }
-        });
+        });*/
     }
 
     private void initNewDevicesView() {

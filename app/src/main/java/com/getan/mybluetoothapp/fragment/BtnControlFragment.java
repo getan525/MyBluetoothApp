@@ -2,7 +2,11 @@ package com.getan.mybluetoothapp.fragment;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -63,6 +67,7 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Nullable
@@ -70,12 +75,14 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_btncontrol, null);
         mUnbinder = ButterKnife.bind(this, view);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -94,8 +101,10 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                 }
             }
         });
-
-
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        getActivity().registerReceiver(mReceiver, filter);
+        getActivity().registerReceiver(mReceiver, filter1);
 
         mBtnGo.setOnTouchListener(this);
         mBtnBack.setOnTouchListener(this);
@@ -104,20 +113,65 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
         mBtnStop.setOnTouchListener(this);
     }
 
-  /*  @Override
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        if (BluetoothService.connectedThread != null){
+            mBtnGo.setEnabled(true);
+            mBtnBack.setEnabled(true);
+            mBtnLeft.setEnabled(true);
+            mBtnRight.setEnabled(true);
+            mBtnStop.setEnabled(true);
+        }else {
+            //Toast.makeText(getContext(), "蓝牙未连接", Toast.LENGTH_SHORT).show();
+            mBtnGo.setEnabled(false);
+            mBtnBack.setEnabled(false);
+            mBtnLeft.setEnabled(false);
+            mBtnRight.setEnabled(false);
+            mBtnStop.setEnabled(false);
+        }
+    }
+    /*  @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }*/
+
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                mBtnGo.setEnabled(true);
+                mBtnBack.setEnabled(true);
+                mBtnLeft.setEnabled(true);
+                mBtnRight.setEnabled(true);
+                mBtnStop.setEnabled(true);
+                Toast.makeText(getContext(), "蓝牙已连接", Toast.LENGTH_SHORT).show();
+            }else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
+                mBtnGo.setEnabled(false);
+                mBtnBack.setEnabled(false);
+                mBtnLeft.setEnabled(false);
+                mBtnRight.setEnabled(false);
+                mBtnStop.setEnabled(false);
+                Toast.makeText(getContext(), "蓝牙没连接", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+        getActivity().unregisterReceiver(mReceiver);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (BluetoothService.connectedThread != null){
+
+
             switch (v.getId()){
                 case R.id.btn_go:
                     switch (event.getAction()){
@@ -128,7 +182,7 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                             BluetoothService.connectedThread.write("ONF".getBytes());
                             break;
                     }
-                    return false;
+                    break;
                 case R.id.btn_back:
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
@@ -138,7 +192,7 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                             BluetoothService.connectedThread.write("ONF".getBytes());
                             break;
                     }
-                    return false;
+                    break;
                 case R.id.btn_left:
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
@@ -148,7 +202,7 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                             BluetoothService.connectedThread.write("ONF".getBytes());
                             break;
                     }
-                    return false;
+                    break;
                 case R.id.btn_right:
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
@@ -158,7 +212,7 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                             BluetoothService.connectedThread.write("ONF".getBytes());
                             break;
                     }
-                    return false;
+                    break;
                 case R.id.btn_stop:
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
@@ -168,11 +222,9 @@ public class BtnControlFragment extends Fragment implements View.OnTouchListener
                             BluetoothService.connectedThread.write("ONF".getBytes());
                             break;
                     }
-                    return false;
+                    break;
             }
-        }else {
-            Toast.makeText(getContext(), "蓝牙未连接", Toast.LENGTH_SHORT).show();
-        }
+
         return false;
     }
 }
